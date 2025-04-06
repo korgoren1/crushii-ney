@@ -26,8 +26,7 @@
       display: flex;
       flex-direction: column;
       position: relative;
-      opacity: 0;
-      transition: opacity 1s ease;
+      z-index: 1;
     }
     .message {
       display: flex;
@@ -45,7 +44,7 @@
       width: 36px;
       height: 36px;
       border-radius: 50%;
-      background-color: gray;
+      background: #00a884;
       color: white;
       display: flex;
       align-items: center;
@@ -114,7 +113,7 @@
       border-radius: 20px;
       font-size: 14px;
       cursor: pointer;
-      transition: background 0.3s ease;
+      transition: background 0.1s ease;
     }
     .options button:hover {
       background: #009270;
@@ -127,6 +126,7 @@
       overflow: hidden;
       top: 0;
       left: 0;
+      z-index: 0;
     }
     .heart {
       position: absolute;
@@ -144,14 +144,14 @@
     }
     .typing-alert {
       position: fixed;
-      bottom: 90px;
+      bottom: 95px;
       left: 50%;
       transform: translateX(-50%);
       font-size: 33px;
       color: blue;
       font-style: italic;
-      animation: fadeInOut 2.s ease-in-out infinite;
-      z-index: 1000;
+      animation: fadeInOut 1.5s ease-in-out infinite;
+      z-index: 2;
     }
     @keyframes fadeInOut {
       0%, 100% { opacity: 0; }
@@ -168,59 +168,34 @@
       0%, 100% { text-shadow: 0 0 10px #ff6ec7, 0 0 20px #ff6ec7; }
       50% { text-shadow: 0 0 20px #00ffe0, 0 0 30px #00ffe0; }
     }
-    #introScreen {
-      position: fixed;
-      inset: 0;
-      background: #121b22;
-      color: white;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      z-index: 9999;
+    .footer-tag {
+      position: absolute;
+      bottom: 5px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 12px;
+      color: #aaa;
       text-align: center;
-    }
-    #introScreen h1 {
-      font-size: 20px;
-      margin-bottom: 20px;
-    }
-    #introScreen h1 span {
-      font-size: 24px;
-    }
-    #autoTyping {
-      font-style: italic;
-      color: #00ffe0;
-      font-size: 16px;
-      height: 24px;
-    }
-    .glow-text {
-      text-align: center;
-      font-size: 14px;
-      color: #00ffe0;
-      margin-top: auto;
-      padding-top: 10px;
-      font-weight: bold;
-      animation: glow 2s infinite;
     }
   </style>
 </head>
 <body>
-  <div id="introScreen">
-    <h1>For someone special...<br><span>if you're seeing this, maybe it's you 💌</span></h1>
-    <div id="autoTyping"></div>
-    <div>Say something... I’m all ears 😊</div>
+  <div id="startScreen" style="position: absolute; top:0; left:0; width:100%; height:100%; background:#121b22; color:white; display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:9999;">
+    <h2 style="margin-bottom: 20px;"><strong style="color: blue;">NEY</strong>💌 Ready to feel something?</h2>
+    <button onclick="startExperience()" style="background:#00a884; border:none; padding:12px 24px; border-radius:25px; font-size:16px; color:white; cursor:pointer;">chebet click here 💖</button>
   </div>
 
-  <div class="chat-box" id="chatBox">
+  <div class="chat-box" id="chatBox" style="display:none;">
     <div class="hearts" id="hearts"></div>
     <div id="typingAlert" class="typing-alert" style="display: none;">Chebet is typing...</div>
   </div>
 
-  <audio id="bgMusic" autoplay loop hidden>
+  <audio id="bgMusic" loop>
     <source src="https://www.bensound.com/bensound-music/bensound-love.mp3" type="audio/mpeg">
   </audio>
 
-  <script>const messages = [
+  <script>
+    const messages = [
     { sender: "you", text: "Hey Chebet 😅 Can I steal a moment of your time?" },
     { sender: "chebet", text: "Haha, why? What did you do this time? 😄" },
     { sender: "you", text: "Nothing serious... just caught myself thinking about your smile again 😳" },
@@ -259,11 +234,10 @@
     { sender: "chebet", text: "I’m glad you said that. Let’s take this journey together, one step at a time." },
     { sender: "you", text: "Together. Always. ❤️" }
   ];
-  
 
     const profilePics = {
-      'you': 'WhatsApp Image 2025-04-03 at 21.31.06 (1).jpeg',  // Replace 'ezra.jpg' with your actual image path
-      'chebet': 'WhatsApp Image 2025-04-06 at 13.25.15.jpeg' // Replace 'chebet.jpg' with Chebet's actual image path
+      'you': 'WhatsApp Image 2025-04-03 at 21.31.06 (1).jpeg',
+      'chebet': 'WhatsApp Image 2025-04-06 at 13.25.15.jpeg'
     };
 
     const chatBox = document.getElementById('chatBox');
@@ -335,64 +309,39 @@
           setTimeout(showMessages, 700);
         });
       } else {
-        showOptions();
+        showFinalScene();
       }
     }
 
-    function showOptions() {
-      const options = document.createElement('div');
-      options.className = 'options';
-      options.innerHTML = `
-        <button onclick="finalScene('yes')">💖 Yes, Ezra. I feel the same</button>
-        <button onclick="finalScene('think')">🙈 I need time to think</button>
-      `;
-      chatBox.appendChild(options);
-      chatBox.scrollTop = chatBox.scrollHeight;
-    }
-
-    function finalScene(type) {
-      document.querySelector('.options').remove();
+    function showFinalScene() {
       const final = document.createElement('div');
       final.className = 'final-message';
-      final.innerHTML = type === 'yes'
-        ? 'You just made Ezra the happiest man alive 💖'
-        : 'Take all the time you need, Chebet. Ezra will be here. 💌';
+      final.innerHTML = 'You just made Ezra the happiest man alive 💖';
       chatBox.appendChild(final);
       chatBox.scrollTop = chatBox.scrollHeight;
     }
 
+    const heartsContainer = document.getElementById('hearts');
     function createHeart() {
       const heart = document.createElement('div');
       heart.className = 'heart';
       heart.style.left = Math.random() * 100 + '%';
       heart.style.animationDuration = (3 + Math.random() * 2) + 's';
       heart.style.background = Math.random() > 0.5 ? 'pink' : '#ff6ec7';
-      document.getElementById('hearts').appendChild(heart);
-      setTimeout(() => document.getElementById('hearts').removeChild(heart), 5000);
+      heartsContainer.appendChild(heart);
+      setTimeout(() => heartsContainer.removeChild(heart), 5000);
     }
-
     setInterval(createHeart, 600);
 
-    // Intro auto-typing text
-    const introScreen = document.getElementById('introScreen');
-    const autoTyping = document.getElementById('autoTyping');
-    const introText = "This isn't just a website. It's a heartbeat in HTML 💖";
-    let i = 0;
-    function typeIntro() {
-      if (i < introText.length) {
-        autoTyping.textContent += introText.charAt(i);
-        i++;
-        setTimeout(typeIntro, 50);
-      } else {
-        setTimeout(() => {
-          introScreen.style.opacity = '0';
-          setTimeout(() => introScreen.remove(), 1000);
-          chatBox.style.opacity = '1';
-          showMessages();
-        }, 2000);
-      }
+    function startExperience() {
+      const music = document.getElementById('bgMusic');
+      const startScreen = document.getElementById('startScreen');
+      const chat = document.getElementById('chatBox');
+      music.play().catch(e => console.log('Autoplay blocked:', e));
+      startScreen.style.display = 'none';
+      chat.style.display = 'flex';
+      showMessages();
     }
-    typeIntro();
   </script>
 </body>
 </html>
